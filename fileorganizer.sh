@@ -14,16 +14,24 @@ files=($(find "$dir" -maxdepth 1 -type f))
 
 read -p "Enter extentions you want to separate : " -a ext
 
+declare -A exts
+
+fh="${dir}"
+
 for i in "${ext[@]}"; do
-	mkdir "i"
+	exts["$i"]="e"
+	mkdir "${fh}${i}"
+	
 done
 
 
 for file in "${files[@]}"; do
-echo "$file"
+	val="${file##*.}"
+	if [[ -n "$val" && -v exts["$val"] ]]; then
+		sh="${file##*/}"
+		np="${fh}/${val}/${sh}"
+		mv "${file}" "${np}"
+	fi
 done
 
-# take input as an array for what extentions the user wants to create files
-# create assosiate array 
-# turn them into arrays after storing them 
-
+# create folder and store them if match accordingly
